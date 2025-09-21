@@ -33,9 +33,9 @@ def add_user():
     req = request.get_json()
 
     for user in users:
-        if str(user["id"]) == str(req.id):
+        if str(user["id"]) == str(req["id"]):
             print(user["id"])
-            print(req.id)
+            print(req["id"])
             return make_response(jsonify({"error":"User ID already exists"}),409)
 
     users.append(req)
