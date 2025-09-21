@@ -49,7 +49,8 @@ def update_user(userid):
 
     for user in users:
         if str(user["id"]) == str(userid):
-            user = req
+            # TODO : Validation stricte avec par ex Pydantic
+            user.update(req)
             res = make_response(jsonify(user),200)
             write(users)
             return res
