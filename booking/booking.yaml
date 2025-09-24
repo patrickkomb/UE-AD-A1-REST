@@ -1,0 +1,236 @@
+openapi: 3.1.1
+info:
+  title: Booking API
+  summary: This is the API of the Booking service
+  description: A service to manage user movie bookings, allowing CRD operations and validation with the Schedule service.
+  contact:
+    name: Noé Jouan - Evan Runemberg
+    url: https://imt-atlantique.fr/
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /:
+    get:
+      tags:
+      - developers
+      summary: Home page of the service
+      description: Returns a welcome message.
+      operationId: home
+      responses:
+        "200":
+          description: Welcome message
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1 style='color:blue'>Welcome to the Booking service!</h1>"
+
+  /bookings/{userid}:
+    get:
+      tags:
+      - developers
+      summary: Get bookings for a user
+      description: Retrieve all bookings for a specific user.
+      operationId: get_bookings_for_user
+      parameters:
+      - name: userid
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Bookings found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBookings'
+        "404":
+          description: No bookings for this user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No bookings for this user
+    post:
+      tags:
+      - developers
+      summary: Add a booking for a user
+      description: Adds a new booking for a user after verifying the movie is scheduled.
+      operationId: add_booking
+      parameters:
+      - name: userid
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Booking data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingInput'
+      responses:
+        "200":
+          description: Booking added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: booking added
+        "400":
+          description: Missing data or movie not scheduled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing date or movie
+        "404":
+          description: Date not found in schedule
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Date not found in schedule
+        "409":
+          description: Booking already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Already booked
+        "503":
+          description: Schedule service unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Schedule service unavailable
+
+    delete:
+      tags:
+      - developers
+      summary: Delete a booking for a user
+      description: Deletes a specific booking of a user.
+      operationId: delete_booking
+      parameters:
+      - name: userid
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Booking data to delete
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingInput'
+      responses:
+        "200":
+          description: Booking deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: booking deleted
+        "400":
+          description: Missing data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing date or movie
+        "404":
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Booking not found
+
+components:
+  schemas:
+    BookingInput:
+      type: object
+      required:
+        - date
+        - movie
+      properties:
+        date:
+          type: string
+          description: Date of the booking in YYYYMMDD format
+          example: "20151201"
+        movie:
+          type: string
+          description: Movie ID to book
+          example: "267eedb8-0f5d-42d5-8f43-72426b9fb3e6"
+
+    BookingDate:
+      type: object
+      required:
+        - date
+        - movies
+      properties:
+        date:
+          type: string
+          description: Date of the booking
+          example: "20151201"
+        movies:
+          type: array
+          items:
+            type: string
+          example:
+            - "267eedb8-0f5d-42d5-8f43-72426b9fb3e6"
+
+    UserBookings:
+      type: object
+      required:
+        - userid
+        - dates
+      properties:
+        userid:
+          type: string
+          example: "chris_rivers"
+        dates:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingDate'

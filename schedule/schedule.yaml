@@ -1,0 +1,162 @@
+openapi: 3.1.1
+info:
+  title: Schedule API
+  summary: This is the API of the Schedule service
+  description: A service to manage movie schedules, allowing CRD operations and retrieval of schedules by date.
+  contact:
+    name: Noé Jouan - Evan Runemberg
+    url: https://imt-atlantique.fr/
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /:
+    get:
+      tags:
+      - developers
+      summary: Home page of the service
+      description: Returns a welcome message.
+      operationId: home
+      responses:
+        "200":
+          description: Welcome message
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1 style='color:blue'>Welcome to the Schedule service!</h1>"
+
+  /schedules:
+    post:
+      tags:
+      - developers
+      summary: Add a new schedule
+      description: Adds a new schedule to the system.
+      operationId: add_schedule
+      requestBody:
+        description: Schedule object to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleItem'
+      responses:
+        "200":
+          description: Schedule added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: schedule added
+        "409":
+          description: Schedule date already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Schedule date already exists
+
+  /schedules/{date}:
+    get:
+      tags:
+      - developers
+      summary: Get schedule by date
+      description: Retrieve schedule information for a given date.
+      operationId: get_schedule_bydate
+      parameters:
+      - name: date
+        in: path
+        description: Date of the schedule in YYYYMMDD format
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Schedule found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleItem'
+        "404":
+          description: No schedule for this date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No schedule for this date
+    delete:
+      tags:
+      - developers
+      summary: Delete schedule by date
+      description: Deletes a schedule for a specific date.
+      operationId: del_schedule_bydate
+      parameters:
+      - name: date
+        in: path
+        description: Date of the schedule in YYYYMMDD format
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Schedule deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleItem'
+        "404":
+          description: Schedule date not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Schedule date not found
+
+components:
+  schemas:
+    AllSchedules:
+      type: object
+      required:
+        - schedule
+      properties:
+        schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleItem'
+    ScheduleItem:
+      type: object
+      required:
+        - date
+        - movies
+      properties:
+        date:
+          type: string
+          description: Date of the schedule in YYYYMMDD format
+          example: "20151201"
+        movies:
+          type: array
+          description: List of movie IDs scheduled for that date
+          items:
+            type: string
+          example:
+            - "267eedb8-0f5d-42d5-8f43-72426b9fb3e6"
+            - "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
+            - "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
