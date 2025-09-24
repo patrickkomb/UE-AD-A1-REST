@@ -92,6 +92,37 @@ def delete_booking(userid):
                     return make_response(jsonify({"message": "booking deleted"}), 200)
     return make_response(jsonify({"error": "Booking not found"}), 404)
 
+@app.route("/bookings/movie/<movie_id>", methods=['GET'])
+def get_users_for_movie(movie_id):
+    # Check if movie exists with Movie service
+    try:
+        movie_resp = requests.get(f"http://localhost:3200/movies/{movie_id}")
+        if movie_resp.status_code != 200:
+            return make_response(jsonify({"error": "Movie ID not found"}), 404)
+        movie_detail = movie_resp.json()
+    except Exception as e:
+        return make_response(jsonify({"error": "Movie service unavailable: {str(e)}"}), 503)
+
+    users = []
+    for user_booking in bookings:
+        for booking_date in user_booking["dates"]:
+            if movie_id in booking_date["movies"]:
+                users.append({
+                    "userid": user_booking["userid"],
+                    "date": booking_date["date"]
+                })
+
+    if not users:
+        return make_response(jsonify({
+            "movie": movie_detail,
+            "error": "No bookings found for this movie"
+        }), 404)
+
+    return make_response(jsonify({
+        "movie": movie_detail,
+        "users": users
+    }), 200)
+
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
    app.run(host=HOST, port=PORT)

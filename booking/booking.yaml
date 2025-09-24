@@ -187,6 +187,64 @@ paths:
                     type: string
                     example: Booking not found
 
+  /bookings/movie/{movie_id}:
+    get:
+      tags:
+        - developers
+      summary: Get users who booked a specific movie
+      description: Retrieve all users who have booked a movie by its ID.
+      operationId: get_users_for_movie
+      parameters:
+        - name: movie_id
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Users who booked the movie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movie:
+                    $ref: '#/components/schemas/MovieItem'
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userid:
+                          type: string
+                          example: "chris_rivers"
+                        date:
+                          type: string
+                          example: "20151201"
+        "404":
+          description: Movie not found or no bookings for this movie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movie:
+                    $ref: '#/components/schemas/MovieItem'
+                  error:
+                    type: string
+                    example: No bookings found for this movie
+        "503":
+          description: Movie service unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Movie service unavailable
+
 components:
   schemas:
     BookingInput:
@@ -234,3 +292,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BookingDate'
+    MovieItem:
+          type: object
+          required:
+            - id
+            - title
+            - director
+            - rating
+          properties:
+            id:
+              type: string
+              example: "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+            title:
+              type: string
+              example: "The Martian"
+            director:
+              type: string
+              example: "Ridley Scott"
+            rating:
+              type: number
+              example: 8.2
