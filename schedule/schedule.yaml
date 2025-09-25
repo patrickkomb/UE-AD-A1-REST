@@ -30,7 +30,7 @@ paths:
             text/html:
               schema:
                 type: string
-                example: "<h1 style='color:blue'>Welcome to the Schedule service!</h1>"
+                example: "<h1 style='color:blue'>Welcome to the Showtime service!</h1>"
 
   /schedules:
     post:
@@ -101,9 +101,9 @@ paths:
                     example: No schedule for this date
     delete:
       tags:
-      - developers
+      - admins
       summary: Delete schedule by date
-      description: Deletes a schedule for a specific date.
+      description: Deletes a schedule for a specific date (Admin-only).
       operationId: del_schedule_bydate
       parameters:
       - name: date
@@ -130,17 +130,51 @@ paths:
                     type: string
                     example: Schedule date not found
 
+  /schedules/{date}/movies:
+    get:
+      tags:
+      - admins
+      summary: Get schedule details with full movie information (Admin)
+      description: Retrieve schedule details for a specific date, including full movie details fetched from the Movies service.
+      operationId: get_schedule_details_bydate
+      parameters:
+      - name: date
+        in: path
+        description: Date of the schedule in YYYYMMDD format
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Schedule with detailed movies found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    example: "20151201"
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieItem'
+        "404":
+          description: No schedule or movies for this date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    example: "20151201"
+                  error:
+                    type: string
+                    example: No movies found for this schedule
+
 components:
   schemas:
-    AllSchedules:
-      type: object
-      required:
-        - schedule
-      properties:
-        schedule:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScheduleItem'
     ScheduleItem:
       type: object
       required:
@@ -160,3 +194,23 @@ components:
             - "267eedb8-0f5d-42d5-8f43-72426b9fb3e6"
             - "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
             - "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+    MovieItem:
+      type: object
+      required:
+        - id
+        - title
+        - director
+        - rating
+      properties:
+        id:
+          type: string
+          example: "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+        title:
+          type: string
+          example: "The Martian"
+        director:
+          type: string
+          example: "Ridley Scott"
+        rating:
+          type: number
+          example: 8.2

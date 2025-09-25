@@ -12,9 +12,10 @@ info:
   version: 1.0.0
 tags:
 - name: admins
-  description: Secured Admin-only calls
+  description: Secured Admin-only calls (requires admin user via X-User-Id header)
 - name: developers
   description: Operations available to regular developers
+
 paths:
   /:
     get:
@@ -35,14 +36,20 @@ paths:
   /bookings/{userid}:
     get:
       tags:
-      - developers
+      - admins
       summary: Get bookings for a user
-      description: Retrieve all bookings for a specific user.
+      description: Retrieve all bookings for a specific user. Requires `X-User-Id` header of either the same user or an admin.
       operationId: get_bookings_for_user
       parameters:
       - name: userid
         in: path
-        description: User ID
+        description: User ID whose bookings to retrieve
+        required: true
+        schema:
+          type: string
+      - name: X-User-Id
+        in: header
+        description: ID of the current user making the request
         required: true
         schema:
           type: string
@@ -53,6 +60,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBookings'
+        "401":
+          description: No user ID provided in header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No user ID provided in header
+        "403":
+          description: Forbidden access to other user’s bookings without admin rights
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: You are not allowed to access this user's bookings
         "404":
           description: No bookings for this user
           content:
@@ -63,6 +90,7 @@ paths:
                   error:
                     type: string
                     example: No bookings for this user
+
     post:
       tags:
       - developers
@@ -190,14 +218,20 @@ paths:
   /bookings/movie/{movie_id}:
     get:
       tags:
-        - developers
+      - admins
       summary: Get users who booked a specific movie
-      description: Retrieve all users who have booked a movie by its ID.
+      description: Retrieve all users who have booked a movie by its ID. Requires `X-User-Id` header of an admin.
       operationId: get_users_for_movie
       parameters:
         - name: movie_id
           in: path
           description: Movie ID
+          required: true
+          schema:
+            type: string
+        - name: X-User-Id
+          in: header
+          description: ID of the current user making the request (must be admin)
           required: true
           schema:
             type: string
@@ -222,6 +256,26 @@ paths:
                         date:
                           type: string
                           example: "20151201"
+        "401":
+          description: No user ID provided in header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No user ID provided in header
+        "403":
+          description: Forbidden access without admin rights
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: You are not allowed to access movie booking details
         "404":
           description: Movie not found or no bookings for this movie
           content:
@@ -292,23 +346,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BookingDate'
+
     MovieItem:
-          type: object
-          required:
-            - id
-            - title
-            - director
-            - rating
-          properties:
-            id:
-              type: string
-              example: "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
-            title:
-              type: string
-              example: "The Martian"
-            director:
-              type: string
-              example: "Ridley Scott"
-            rating:
-              type: number
-              example: 8.2
+      type: object
+      required:
+        - id
+        - title
+        - director
+        - rating
+      properties:
+        id:
+          type: string
+          example: "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+        title:
+          type: string
+          example: "The Martian"
+        director:
+          type: string
+          example: "Ridley Scott"
+        rating:
+          type: number
+          example: 8.2
