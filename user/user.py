@@ -11,8 +11,6 @@ PORT = 3203
 HOST = '0.0.0.0'
 
 repo = get_repository()
-users = repo.load()
-
 @app.route("/", methods=['GET'])
 def home():
    return "<h1 style='color:blue'>Welcome to the User service!</h1>"
@@ -20,8 +18,10 @@ def home():
 @app.route("/users/<userid>", methods=['GET'])
 @owner_or_admin_required
 def get_user_byid(userid):
+    users = repo.load()
     for user in users:
         if str(user["id"]) == str(userid):
+            print(user)
             res = make_response(jsonify(user),200)
             return res
     return make_response(jsonify({"error":"User ID not found"}),404)
@@ -30,11 +30,9 @@ def get_user_byid(userid):
 @admin_required
 def add_user():
     req = request.get_json()
-
+    users = repo.load()
     for user in users:
         if str(user["id"]) == str(req["id"]):
-            print(user["id"])
-            print(req["id"])
             return make_response(jsonify({"error":"User ID already exists"}),409)
 
     users.append(req)
@@ -46,7 +44,7 @@ def add_user():
 @owner_or_admin_required
 def update_user(userid):
     req = request.get_json()
-
+    users = repo.load()
     for user in users:
         if str(user["id"]) == str(userid):
             user.update(req)
@@ -60,6 +58,7 @@ def update_user(userid):
 @app.route("/users/<userid>", methods=['DELETE'])
 @owner_or_admin_required
 def del_user(userid):
+    users = repo.load()
     for user in users:
         if str(user["id"]) == str(userid):
             users.remove(user)
