@@ -1,8 +1,7 @@
 from functools import wraps
 from flask import request, jsonify, make_response
 import requests
-
-USERS_SERVICE_URL = 'http://localhost:3203/users'
+from common.env import USERS_SERVICE_URL
 
 def is_admin(userid):
     try:

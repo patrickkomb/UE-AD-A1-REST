@@ -1,24 +1,17 @@
 from flask import Flask, request, jsonify, make_response
-import json
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.permissions import admin_required
+from common.permissions import admin_required
+from repository import get_repository
 
 app = Flask(__name__)
 
 PORT = 3200
 HOST = '0.0.0.0'
 
-with open('{}/databases/movies.json'.format("."), 'r') as jsf:
-    movies = json.load(jsf)["movies"]
-    print(movies)
-
-def write(movies):
-    with open('{}/databases/movies.json'.format("."), 'w') as f:
-        full = {}
-        full['movies']=movies
-        json.dump(full, f)
+repo = get_repository()
+movies = repo.load()
 
 # root message
 @app.route("/", methods=['GET'])
@@ -65,7 +58,7 @@ def add_movie(movieid):
             return make_response(jsonify({"error":"movie ID already exists"}),500)
 
     movies.append(req)
-    write(movies)
+    repo.save(movies)
     res = make_response(jsonify({"message":"movie added"}),200)
     return res
 
@@ -76,7 +69,7 @@ def update_movie_rating(movieid, rate):
         if str(movie["id"]) == str(movieid):
             movie["rating"] = rate
             res = make_response(jsonify(movie),200)
-            write(movies)
+            repo.save(movies)
             return res
 
     res = make_response(jsonify({"error":"movie ID not found"}),500)
@@ -88,7 +81,7 @@ def del_movie(movieid):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             movies.remove(movie)
-            write(movies)
+            repo.save(movies)
             return make_response(jsonify(movie),200)
 
     res = make_response(jsonify({"error":"movie ID not found"}),500)

@@ -1,27 +1,19 @@
 from flask import Flask, request, jsonify, make_response
 import requests
-import json
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.permissions import admin_required, owner_or_admin_required
+from common.permissions import admin_required, owner_or_admin_required
+from repository import get_repository
+from env import SCHEDULE_SERVICE_URL, MOVIES_SERVICE_URL
 
 app = Flask(__name__)
 
 PORT = 3201
 HOST = '0.0.0.0'
-SCHEDULE_SERVICE_URL = 'http://localhost:3202/schedules'
-MOVIES_SERVICE_URL = 'http://localhost:3200/movies'
 
-with open('{}/databases/bookings.json'.format("."), "r") as jsf:
-    bookings = json.load(jsf)["bookings"]
-
-
-def write(bookings_list):
-    with open('{}/databases/bookings.json'.format("."), 'w') as f:
-        full = {'bookings': bookings_list}
-        json.dump(full, f)
-
+repo = get_repository()
+bookings = repo.load()
 
 @app.route("/", methods=['GET'])
 def home():
@@ -66,21 +58,21 @@ def add_booking(userid):
                     if movie in booking_date["movies"]:
                         return make_response(jsonify({"error": "Already booked"}), 409)
                     booking_date["movies"].append(movie)
-                    write(bookings)
+                    repo.save(bookings)
                     return make_response(jsonify({"message": "booking added"}), 200)
             # Date not found, add new date with movie
             user_booking["dates"].append({
                 "date": date,
                 "movies": [movie]
             })
-            write(bookings)
+            repo.save(bookings)
             return make_response(jsonify({"message": "booking added"}), 200)
 
     bookings.append({
         "userid": userid,
         "dates": [{"date": date, "movies": [movie]}]
     })
-    write(bookings)
+    repo.save(bookings)
     return make_response(jsonify({"message": "booking added"}), 200)
 
 
@@ -100,7 +92,7 @@ def delete_booking(userid):
                     booking_date["movies"].remove(movie)
                     if not booking_date["movies"]:
                         user_booking["dates"].remove(booking_date)
-                    write(bookings)
+                    repo.save(bookings)
                     return make_response(jsonify({"message": "booking deleted"}), 200)
     return make_response(jsonify({"error": "Booking not found"}), 404)
 

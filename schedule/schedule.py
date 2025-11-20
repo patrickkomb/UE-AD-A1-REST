@@ -1,24 +1,19 @@
 import requests
 from flask import Flask, request, jsonify, make_response
-import json
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.permissions import admin_required
+from common.permissions import admin_required
+from repository import get_repository
+from env import MOVIES_SERVICE_URL
 
 app = Flask(__name__)
 
 PORT = 3202
 HOST = '0.0.0.0'
-MOVIES_SERVICE_URL = 'http://localhost:3200/movies'
 
-with open('{}/databases/times.json'.format("."), "r") as jsf:
-   schedules = json.load(jsf)["schedule"]
-
-def write(times):
-   with open('{}/databases/times.json'.format("."), 'w') as f:
-      full = {'schedule': times}
-      json.dump(full, f)
+repo = get_repository()
+schedules = repo.load()
 
 @app.route("/", methods=['GET'])
 def home():
@@ -68,7 +63,7 @@ def add_schedule():
             return make_response(jsonify({"error":"Schedule date already exists"}),409)
 
     schedules.append(req)
-    write(schedules)
+    repo.save(schedules)
     res = make_response(jsonify({"message":"schedule added"}),200)
     return res
 
@@ -78,7 +73,7 @@ def del_schedule_bydate(date):
     for schedule in schedules:
         if str(schedule["date"]) == str(date):
             schedules.remove(schedule)
-            write(schedules)
+            repo.save(schedules)
             return make_response(jsonify(schedule),200)
 
     res = make_response(jsonify({"error":"Schedule date not found"}),404)

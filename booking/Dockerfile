@@ -1,16 +1,7 @@
-FROM python
-# can you find a lighter image?
-
+FROM python:3.10-slim
 WORKDIR /app
-
-# copy the requirements file in the workdir
-RUN
-
-# install the Python requirements
-RUN
-
-# copy the app files and directories
-RUN
-
-# start booking.py when the container is started
-CMD 
+COPY requirements.txt /app
+RUN pip install -r requirements.txt
+COPY common/ /app/common/
+COPY booking/ /app/
+CMD ["python","-u","booking.py"]
