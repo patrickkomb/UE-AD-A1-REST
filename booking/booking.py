@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response
 import requests
 import json
-from werkzeug.exceptions import NotFound
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.permissions import admin_required, owner_or_admin_required
 
 app = Flask(__name__)
 
@@ -9,7 +12,6 @@ PORT = 3201
 HOST = '0.0.0.0'
 SCHEDULE_SERVICE_URL = 'http://localhost:3202/schedules'
 MOVIES_SERVICE_URL = 'http://localhost:3200/movies'
-USERS_SERVICE_URL = 'http://localhost:3203/users'
 
 with open('{}/databases/bookings.json'.format("."), "r") as jsf:
     bookings = json.load(jsf)["bookings"]
@@ -21,33 +23,14 @@ def write(bookings_list):
         json.dump(full, f)
 
 
-def is_admin(userid):
-    try:
-        user_resp = requests.get(f"{USERS_SERVICE_URL}/{userid}")
-        if user_resp.status_code == 200:
-            user_detail = user_resp.json()
-            print(user_detail["is_admin"])
-            if user_detail["is_admin"]:
-                return True
-        else:
-            return False
-    except Exception as e:
-        return False
-
 @app.route("/", methods=['GET'])
 def home():
     return "<h1 style='color:blue'>Welcome to the Booking service!</h1>"
 
 
 @app.route("/bookings/<userid>", methods=['GET'])
+@owner_or_admin_required
 def get_bookings_for_user(userid):
-    current_userid = request.headers.get("X-User-Id")
-    if not current_userid:
-        return make_response(jsonify({"error": "No user ID provided in header"}), 401)
-
-    if current_userid != userid and not is_admin(current_userid):
-        return make_response(jsonify({"error": "You are not allowed to access this user's bookings"}), 403)
-
     for user_booking in bookings:
         if user_booking["userid"] == userid:
             return make_response(jsonify(user_booking), 200)
@@ -55,6 +38,7 @@ def get_bookings_for_user(userid):
 
 
 @app.route("/bookings/<userid>", methods=['POST'])
+@owner_or_admin_required
 def add_booking(userid):
     req = request.get_json()
     date = req.get("date")
@@ -101,6 +85,7 @@ def add_booking(userid):
 
 
 @app.route("/bookings/<userid>", methods=['DELETE'])
+@owner_or_admin_required
 def delete_booking(userid):
     req = request.get_json()
     date = req.get("date")
@@ -121,14 +106,8 @@ def delete_booking(userid):
 
 
 @app.route("/bookings/movie/<movie_id>", methods=['GET'])
+@admin_required
 def get_users_for_movie(movie_id):
-    current_userid = request.headers.get("X-User-Id")
-    if not current_userid:
-        return make_response(jsonify({"error": "No user ID provided in header"}), 401)
-
-    if not is_admin(current_userid):
-        return make_response(jsonify({"error": "You are not allowed to access movie booking details"}), 403)
-
     # Check if movie exists with Movie service
     try:
         movie_resp = requests.get(f"{MOVIES_SERVICE_URL}/{movie_id}")

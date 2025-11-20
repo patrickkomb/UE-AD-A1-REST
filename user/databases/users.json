@@ -1,6 +1,12 @@
 {
   "users": [
     {
+      "id": "admin",
+      "name": "Admin",
+      "last_active": 1360031010,
+      "is_admin": true
+    },
+    {
       "id": "chris_rivers",
       "name": "Chris Rivers",
       "last_active": 1360031010,

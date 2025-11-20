@@ -1,7 +1,10 @@
 import requests
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response
 import json
-from werkzeug.exceptions import NotFound
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.permissions import admin_required
 
 app = Flask(__name__)
 
@@ -54,6 +57,7 @@ def get_schedule_details_bydate(date):
     return make_response(jsonify({"error": "No schedule for this date"}), 404)
 
 @app.route("/schedules", methods=['POST'])
+@admin_required
 def add_schedule():
     req = request.get_json()
 
@@ -69,6 +73,7 @@ def add_schedule():
     return res
 
 @app.route("/schedules/<date>", methods=['DELETE'])
+@admin_required
 def del_schedule_bydate(date):
     for schedule in schedules:
         if str(schedule["date"]) == str(date):

@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, make_response
 import json
+import os
 import sys
-from werkzeug.exceptions import NotFound
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.permissions import admin_required
 
 app = Flask(__name__)
 
@@ -52,6 +54,7 @@ def get_movie_bytitle():
     return res
 
 @app.route("/movies/<movieid>", methods=['POST'])
+@admin_required
 def add_movie(movieid):
     req = request.get_json()
 
@@ -67,6 +70,7 @@ def add_movie(movieid):
     return res
 
 @app.route("/movies/<movieid>/<rate>", methods=['PUT'])
+@admin_required
 def update_movie_rating(movieid, rate):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
@@ -79,6 +83,7 @@ def update_movie_rating(movieid, rate):
     return res
 
 @app.route("/movies/<movieid>", methods=['DELETE'])
+@admin_required
 def del_movie(movieid):
     for movie in movies:
         if str(movie["id"]) == str(movieid):

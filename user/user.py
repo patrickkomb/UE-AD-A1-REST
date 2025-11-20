@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, jsonify, make_response
-import requests
+from flask import Flask, request, jsonify, make_response
 import json
-from werkzeug.exceptions import NotFound
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.permissions import admin_required, owner_or_admin_required
 
 app = Flask(__name__)
 
@@ -21,6 +23,7 @@ def home():
    return "<h1 style='color:blue'>Welcome to the User service!</h1>"
 
 @app.route("/users/<userid>", methods=['GET'])
+@owner_or_admin_required
 def get_user_byid(userid):
     for user in users:
         if str(user["id"]) == str(userid):
@@ -29,6 +32,7 @@ def get_user_byid(userid):
     return make_response(jsonify({"error":"User ID not found"}),404)
 
 @app.route("/users", methods=['POST'])
+@admin_required
 def add_user():
     req = request.get_json()
 
@@ -44,6 +48,7 @@ def add_user():
     return res
 
 @app.route("/users/<userid>", methods=['PUT'])
+@owner_or_admin_required
 def update_user(userid):
     req = request.get_json()
 
@@ -58,6 +63,7 @@ def update_user(userid):
     return res
 
 @app.route("/users/<userid>", methods=['DELETE'])
+@owner_or_admin_required
 def del_user(userid):
     for user in users:
         if str(user["id"]) == str(userid):
