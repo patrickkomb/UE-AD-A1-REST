@@ -13,21 +13,19 @@ PORT = 3201
 HOST = '0.0.0.0'
 
 repo = get_repository()
-bookings = repo.load()
 
 @app.route("/", methods=['GET'])
 def home():
     return "<h1 style='color:blue'>Welcome to the Booking service!</h1>"
 
-
 @app.route("/bookings/<userid>", methods=['GET'])
 @owner_or_admin_required
 def get_bookings_for_user(userid):
+    bookings = repo.load()
     for user_booking in bookings:
         if user_booking["userid"] == userid:
             return make_response(jsonify(user_booking), 200)
     return make_response(jsonify({"error": "No bookings for this user"}), 404)
-
 
 @app.route("/bookings/<userid>", methods=['POST'])
 @owner_or_admin_required
@@ -50,6 +48,7 @@ def add_booking(userid):
         return make_response(jsonify({"error": f"Schedule service unavailable: {str(e)}"}), 503)
 
     # Search if user already exists in bookings
+    bookings = repo.load()
     for user_booking in bookings:
         if user_booking["userid"] == userid:
             # Search if the date already exists for this user
@@ -75,7 +74,6 @@ def add_booking(userid):
     repo.save(bookings)
     return make_response(jsonify({"message": "booking added"}), 200)
 
-
 @app.route("/bookings/<userid>", methods=['DELETE'])
 @owner_or_admin_required
 def delete_booking(userid):
@@ -85,6 +83,7 @@ def delete_booking(userid):
     if not date or not movie:
         return make_response(jsonify({"error": "Missing date or movie"}), 400)
 
+    bookings = repo.load()
     for user_booking in bookings:
         if user_booking["userid"] == userid:
             for booking_date in user_booking["dates"]:
@@ -95,7 +94,6 @@ def delete_booking(userid):
                     repo.save(bookings)
                     return make_response(jsonify({"message": "booking deleted"}), 200)
     return make_response(jsonify({"error": "Booking not found"}), 404)
-
 
 @app.route("/bookings/movie/<movie_id>", methods=['GET'])
 @admin_required
@@ -110,6 +108,7 @@ def get_users_for_movie(movie_id):
         return make_response(jsonify({"error": "Movie service unavailable: {str(e)}"}), 503)
 
     users = []
+    bookings = repo.load()
     for user_booking in bookings:
         for booking_date in user_booking["dates"]:
             if movie_id in booking_date["movies"]:

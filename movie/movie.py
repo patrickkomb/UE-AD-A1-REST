@@ -11,7 +11,6 @@ PORT = 3200
 HOST = '0.0.0.0'
 
 repo = get_repository()
-movies = repo.load()
 
 # root message
 @app.route("/", methods=['GET'])
@@ -20,11 +19,13 @@ def home():
 
 @app.route("/json", methods=['GET'])
 def get_json():
+    movies = repo.load()
     res = make_response(jsonify(movies), 200)
     return res
 
 @app.route("/movies/<movieid>", methods=['GET'])
 def get_movie_byid(movieid):
+    movies = repo.load()
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             res = make_response(jsonify(movie),200)
@@ -36,6 +37,7 @@ def get_movie_bytitle():
     json = ""
     if request.args:
         req = request.args
+        movies = repo.load()
         for movie in movies:
             if str(movie["title"]) == str(req["title"]):
                 json = movie
@@ -50,7 +52,7 @@ def get_movie_bytitle():
 @admin_required
 def add_movie(movieid):
     req = request.get_json()
-
+    movies = repo.load()
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             print(movie["id"])
@@ -65,6 +67,7 @@ def add_movie(movieid):
 @app.route("/movies/<movieid>/<rate>", methods=['PUT'])
 @admin_required
 def update_movie_rating(movieid, rate):
+    movies = repo.load()
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             movie["rating"] = rate
@@ -78,6 +81,7 @@ def update_movie_rating(movieid, rate):
 @app.route("/movies/<movieid>", methods=['DELETE'])
 @admin_required
 def del_movie(movieid):
+    movies = repo.load()
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             movies.remove(movie)

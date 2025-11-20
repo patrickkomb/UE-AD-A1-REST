@@ -13,7 +13,6 @@ PORT = 3202
 HOST = '0.0.0.0'
 
 repo = get_repository()
-schedules = repo.load()
 
 @app.route("/", methods=['GET'])
 def home():
@@ -21,6 +20,7 @@ def home():
 
 @app.route("/schedules/<date>", methods=['GET'])
 def get_schedule_bydate(date):
+    schedules = repo.load()
     for schedule in schedules:
         if str(schedule["date"]) == str(date):
             res = make_response(jsonify(schedule),200)
@@ -29,6 +29,7 @@ def get_schedule_bydate(date):
 
 @app.route("/schedules/<date>/movies", methods=['GET'])
 def get_schedule_details_bydate(date):
+    schedules = repo.load()
     for schedule in schedules:
         if str(schedule["date"]) == str(date):
             movies = []
@@ -55,7 +56,7 @@ def get_schedule_details_bydate(date):
 @admin_required
 def add_schedule():
     req = request.get_json()
-
+    schedules = repo.load()
     for schedule in schedules:
         if str(schedule["date"]) == str(req["date"]):
             print(schedule["date"])
@@ -70,6 +71,7 @@ def add_schedule():
 @app.route("/schedules/<date>", methods=['DELETE'])
 @admin_required
 def del_schedule_bydate(date):
+    schedules = repo.load()
     for schedule in schedules:
         if str(schedule["date"]) == str(date):
             schedules.remove(schedule)
