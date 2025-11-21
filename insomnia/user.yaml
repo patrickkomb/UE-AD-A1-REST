@@ -14,12 +14,12 @@ collection:
       sortKey: -1763667110886
       description: ""
     children:
-      - url: "{{ _.USER_LOCAL }}/chris_rivers"
+      - url: http://localhost:3203/users/chris_rivers
         name: User By Id (from Admin) OK
         meta:
           id: req_22a86acddb64493d905ce7a6dabbcd15
           created: 1763648999901
-          modified: 1763667118820
+          modified: 1763742097158
           isPrivate: false
           description: ""
           sortKey: -1763667117667
@@ -41,12 +41,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.USER_LOCAL }}/chris_rivers"
+      - url: http://localhost:3203/users/chris_rivers
         name: User By Id (from other) KO
         meta:
           id: req_b60d8b7729224f44a4488a9a118e61cd
           created: 1763667087683
-          modified: 1763667117596
+          modified: 1763742108575
           isPrivate: false
           description: ""
           sortKey: -1763667117567
@@ -68,12 +68,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.USER_LOCAL }}/chris_rivers"
-        name: User By Id (from User) OK
+      - url: http://localhost:3203/users/chris_rivers
+        name: User By Id (from owner) OK
         meta:
           id: req_c877cbed5fd24498bc8a1f321fb32317
           created: 1763667129098
-          modified: 1763667133515
+          modified: 1763742104754
           isPrivate: false
           description: ""
           sortKey: -1763667117617
@@ -95,12 +95,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.USER_LOCAL }}/chris_riverss"
+      - url: http://localhost:3203/users/chris_riverss
         name: User By Id (from Admin) NotFound
         meta:
           id: req_f0d0fe7f22364a368db03fd0dd15c776
           created: 1763672140902
-          modified: 1763672142787
+          modified: 1763742100626
           isPrivate: false
           description: ""
           sortKey: -1763667117642
@@ -126,16 +126,16 @@ collection:
     meta:
       id: fld_5105b37b12c3433da3e939b0b12f2356
       created: 1763667150409
-      modified: 1763667165161
-      sortKey: -1763667110986
+      modified: 1763741822560
+      sortKey: -1763667323557
       description: ""
     children:
-      - url: "{{ _.USER_LOCAL }}"
+      - url: http://localhost:3203/users
         name: Create (from Admin) OK
         meta:
           id: req_6a43e09faab94f008dfea5ad8bfacd42
           created: 1763667187936
-          modified: 1763728777982
+          modified: 1763742062429
           isPrivate: false
           description: ""
           sortKey: -1763667135125.5
@@ -169,12 +169,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.USER_LOCAL }}"
-        name: Create (from User) KO
+      - url: http://localhost:3203/users
+        name: Create (from owner) KO
         meta:
           id: req_1a67bed202144fe4949a60b820dd69e7
           created: 1763667291811
-          modified: 1763667299153
+          modified: 1763742064785
           isPrivate: false
           description: ""
           sortKey: -1763667126396.25
@@ -215,20 +215,138 @@ collection:
       modified: 1763667310533
       sortKey: -1763667310533
       description: ""
+    children:
+      - url: http://localhost:3203/users/test_test
+        name: Update (from Admin) OK
+        meta:
+          id: req_932b42b3f02c4b8bb4cb14ebfcb781b0
+          created: 1763741802783
+          modified: 1763742070994
+          isPrivate: false
+          description: ""
+          sortKey: -1763741809636
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"id": "test_test",
+            	"name": "New name",
+            	"last_active": 1360031244,
+            	"is_admin": false
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_33c225062f1a4e1b9dbcfe1e7339e458
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_b32ef95a520e452e8a966771c1e62005
+          - id: pair_c01dcb963fdf4d79baab30d96307325c
+            name: X-User-Id
+            value: admin
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3203/users/test_test
+        name: Update (from other) KO
+        meta:
+          id: req_0aa76044d5394b0dbe6734e3b8961da1
+          created: 1763741900112
+          modified: 1763742080404
+          isPrivate: false
+          description: ""
+          sortKey: -1763704568035
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"id": "test_test",
+            	"name": "New name",
+            	"last_active": 1360031244,
+            	"is_admin": false
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_33c225062f1a4e1b9dbcfe1e7339e458
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_b32ef95a520e452e8a966771c1e62005
+          - id: pair_c01dcb963fdf4d79baab30d96307325c
+            name: X-User-Id
+            value: chris_rivers
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3203/users/test_test
+        name: Update (from owner) OK
+        meta:
+          id: req_6291564154084facab30d030b5e84fa8
+          created: 1763741925176
+          modified: 1763742076273
+          isPrivate: false
+          description: ""
+          sortKey: -1763723188835.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"id": "test_test",
+            	"name": "New name v2",
+            	"last_active": 1360031244,
+            	"is_admin": false
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_33c225062f1a4e1b9dbcfe1e7339e458
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_b32ef95a520e452e8a966771c1e62005
+          - id: pair_c01dcb963fdf4d79baab30d96307325c
+            name: X-User-Id
+            value: test_test
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
   - name: DELETE
     meta:
       id: fld_e82df68c74d54b778a259cce0e1520bb
       created: 1763667323457
-      modified: 1763667323457
-      sortKey: -1763667323457
+      modified: 1763741829694
+      sortKey: -1763667210709.5
       description: ""
     children:
-      - url: "{{ _.USER_LOCAL }}/test_test"
+      - url: http://localhost:3203/users/test_test
         name: DELETE (from admin) OK
         meta:
           id: req_9014ff3d782149d5ab99f9863e65fd37
           created: 1763667326434
-          modified: 1763727428733
+          modified: 1763742088609
           isPrivate: false
           description: ""
           sortKey: -1763667326434
@@ -250,12 +368,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.USER_LOCAL }}/test_test"
-        name: DELETE (from user) OK
+      - url: http://localhost:3203/users/test_test
+        name: DELETE (from owner) OK
         meta:
           id: req_e25e3a58e867461aa47341528a866f56
           created: 1763727434114
-          modified: 1763727440499
+          modified: 1763742093337
           isPrivate: false
           description: ""
           sortKey: -1763667230779.75
