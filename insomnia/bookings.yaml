@@ -1,0 +1,379 @@
+type: collection.insomnia.rest/5.0
+name: Bookings - REST
+meta:
+  id: wrk_61e84cfa9a954ea1859320728bd11ba5
+  created: 1758810166704
+  modified: 1763663138401
+  description: ""
+collection:
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: GET Bookings - Admin OK
+    meta:
+      id: req_647b3064922d48b98657be2917da5ec4
+      created: 1763655017839
+      modified: 1763655072735
+      isPrivate: false
+      description: ""
+      sortKey: -1763652903952
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: admin
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: GET Bookings - Owner OK
+    meta:
+      id: req_5199cfead32e410ab8804fae367c355b
+      created: 1763655084957
+      modified: 1763655090172
+      isPrivate: false
+      description: ""
+      sortKey: -1763652903902
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: chris_rivers
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: GET Bookings - Permission  KO
+    meta:
+      id: req_ddfbc429a28a4fbc91856895d97f04e2
+      created: 1763655108323
+      modified: 1763742826006
+      isPrivate: false
+      description: ""
+      sortKey: -1763652903877
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: garret_heaton
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: POST Bookings - Owner OK
+    meta:
+      id: req_9191c4313d04458db7635a7c8dff0c09
+      created: 1763742413274
+      modified: 1763742799056
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098622.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |2-
+                {
+                  "date": "20151205",
+                  "movie": "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
+                }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_c8adf0da994c409aaffbbc84741afaea
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: chris_rivers
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: POST Bookings - Admin OK
+    meta:
+      id: req_1f122baba512422a85cdc0f062ececc5
+      created: 1763742522474
+      modified: 1763742638964
+      isPrivate: false
+      description: ""
+      sortKey: -1763636001249.75
+    method: POST
+    body:
+      mimeType: application/json
+      text: |2-
+                {
+                  "date": "20151205",
+                  "movie": "a8034f44-aee4-44cf-b32c-74cf452aaaae"
+                }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_c8adf0da994c409aaffbbc84741afaea
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: admin
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: POST Bookings - Permission KO
+    meta:
+      id: req_7f54d91cb0314b6bb086ab473324d83c
+      created: 1763742727858
+      modified: 1763742823872
+      isPrivate: false
+      description: ""
+      sortKey: -1763602195995.25
+    method: POST
+    body:
+      mimeType: application/json
+      text: |2-
+                {
+                  "date": "20151205",
+                  "movie": 
+                    "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
+                }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_c8adf0da994c409aaffbbc84741afaea
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: garret_heaton
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: DELETE Bookings - Admin OK
+    meta:
+      id: req_c4a7833820b74e50b7623113fe926350
+      created: 1763742871529
+      modified: 1763742875280
+      isPrivate: false
+      description: ""
+      sortKey: -1763602195895.25
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |2-
+                {
+                  "date": "20151205",
+                  "movie": "a8034f44-aee4-44cf-b32c-74cf452aaaae"
+                }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_c8adf0da994c409aaffbbc84741afaea
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: admin
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: DELETE Bookings - Owner OK
+    meta:
+      id: req_50ca20a435534a5083fe11fca7781d8a
+      created: 1763742892114
+      modified: 1763742938936
+      isPrivate: false
+      description: ""
+      sortKey: -1763593744631.625
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |2-
+                {
+                  "date": "20151205",
+                  "movie": "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
+                }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_c8adf0da994c409aaffbbc84741afaea
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: admin
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/chris_rivers
+    name: DELETE Bookings - Permission KO
+    meta:
+      id: req_68548c6fe95046979e7c536c39085710
+      created: 1763742899283
+      modified: 1763742982765
+      isPrivate: false
+      description: ""
+      sortKey: -1763589518999.8125
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |2-
+                {
+                  "date": "20151205",
+                  "movie": "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
+                }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_c8adf0da994c409aaffbbc84741afaea
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: garret_heaton
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/movie/276c79ec-a26a-40a6-b3d3-fb242a5947b6
+    name: GET Users For Movie- Admin OK
+    meta:
+      id: req_f2a56b5009ff419d89cd43bf47283de9
+      created: 1763743064237
+      modified: 1763743167088
+      isPrivate: false
+      description: ""
+      sortKey: -1763644452563.375
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: admin
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3201/bookings/movie/276c79ec-a26a-40a6-b3d3-fb242a5947b6
+    name: GET Users For Movie- Admin KO
+    meta:
+      id: req_27dfa24704314bf0b3af2a794fbdd663
+      created: 1763743187162
+      modified: 1763743191275
+      isPrivate: false
+      description: ""
+      sortKey: -1763640226906.5625
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_be9a642ab7f844ff96a17e9bf0fce6f0
+      - id: pair_9637dfeb124649279742b94585a6d151
+        name: X-User-Id
+        value: test
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_ec327bb947ff4c82bc160486b37c365a
+    created: 1758288634407
+    modified: 1758288634407
+environments:
+  name: Base Environment
+  meta:
+    id: env_2cb1a7225aca4c2bac86151df929230a
+    created: 1758288634407
+    modified: 1758288634407
+    isPrivate: false

@@ -1,0 +1,223 @@
+type: collection.insomnia.rest/5.0
+name: Schedule - REST
+meta:
+  id: wrk_e04bbb71d74147748407515d650eee43
+  created: 1763741142500
+  modified: 1763741142500
+  description: ""
+collection:
+  - url: http://localhost:3202/schedules
+    name: POST Schedule - ADMIN OK
+    meta:
+      id: req_64f2918771b8460abca307b8762ee9ff
+      created: 1763741197480
+      modified: 1763741541806
+      isPrivate: false
+      description: ""
+      sortKey: -1763741197480
+    method: POST
+    body:
+      mimeType: application/json
+      text: |2-
+            {
+              "date": "20480606",
+              "movies": [
+                "720d006c-3a57-4b6a-b18f-9b713b073f3c",
+                "a8034f44-aee4-44cf-b32c-74cf452aaaae",
+                "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+              ]
+            }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_f9cc023f2c49422ab53d1000b0d14492
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_aada8f1f1bce4115a4fcc29e05139082
+      - id: pair_ee946ac9eaf04f298441af62da015bbc
+        name: X-User-Id
+        value: admin
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3202/schedules
+    name: POST Schedule - ADMIN KO
+    meta:
+      id: req_ff7704312aff4e10b65738bb767693f6
+      created: 1763741639198
+      modified: 1763741654245
+      isPrivate: false
+      description: ""
+      sortKey: -1763697050716
+    method: POST
+    body:
+      mimeType: application/json
+      text: |2-
+            {
+              "date": "20480606",
+              "movies": [
+                "720d006c-3a57-4b6a-b18f-9b713b073f3c",
+                "a8034f44-aee4-44cf-b32c-74cf452aaaae",
+                "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+              ]
+            }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_f9cc023f2c49422ab53d1000b0d14492
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_aada8f1f1bce4115a4fcc29e05139082
+      - id: pair_ee946ac9eaf04f298441af62da015bbc
+        name: X-User-Id
+        value: test
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3202/schedules/20151130
+    name: "GET Schedule "
+    meta:
+      id: req_6675f01624b8423ea66acf7c4a26fe5f
+      created: 1763741735415
+      modified: 1763741891566
+      isPrivate: false
+      description: ""
+      sortKey: -1763674977334
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_aada8f1f1bce4115a4fcc29e05139082
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3202/schedules/20151130/movies
+    name: GET Schedule Details
+    meta:
+      id: req_1aa8a1a24b5449ce81adb434d0a343e4
+      created: 1763741948770
+      modified: 1763742002707
+      isPrivate: false
+      description: ""
+      sortKey: -1763663940643
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_aada8f1f1bce4115a4fcc29e05139082
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3202/schedules/20480606
+    name: DELETE Schedule KO 1
+    meta:
+      id: req_3fce948fd44c4195918be8983a3c4d7d
+      created: 1763742106000
+      modified: 1763742174056
+      isPrivate: false
+      description: ""
+      sortKey: -1763658422297.5
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_aada8f1f1bce4115a4fcc29e05139082
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3202/schedules/20480606
+    name: DELETE Schedule KO 2
+    meta:
+      id: req_67fe9188be884bc08cf8bc0a07fd8de1
+      created: 1763742142645
+      modified: 1763743104131
+      isPrivate: false
+      description: ""
+      sortKey: -1763655663124.75
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_aada8f1f1bce4115a4fcc29e05139082
+      - id: pair_ef9350af6a2a47ce84bb8205722f2ede
+        name: X-User-Id
+        value: test
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3202/schedules/20480606
+    name: DELETE Schedule OK
+    meta:
+      id: req_bbad94aef44b4479b020b20a167669d1
+      created: 1763742188114
+      modified: 1763742193235
+      isPrivate: false
+      description: ""
+      sortKey: -1763654283538.375
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_aada8f1f1bce4115a4fcc29e05139082
+      - id: pair_ef9350af6a2a47ce84bb8205722f2ede
+        name: X-User-Id
+        value: admin
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_85353517e5798600a8861f7a6f60fbcbcd42b1b9
+    created: 1763741142507
+    modified: 1763741142507
+environments:
+  name: Base Environment
+  meta:
+    id: env_85353517e5798600a8861f7a6f60fbcbcd42b1b9
+    created: 1763741142504
+    modified: 1763741142504
+    isPrivate: false
