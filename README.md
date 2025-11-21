@@ -51,6 +51,8 @@ Ce projet contient 4 microservices :
 
 L'application est découpée en 4 microservices REST indépendants (Movie, Booking, User, Schedule) qui communiquent entre eux via des requêtes HTTP.
 
+<img src="assets/REST.png">
+
 Le code contient plusieurs fichiers spécifiques et nécessaires au bon fonctionnement du projet peu importe l'environnement :
 
 ### ``env.py``
@@ -95,7 +97,7 @@ USERS_SERVICE_URL=http://user:3203/users
 SCHEDULE_SERVICE_URL=http://schedule:3202/schedules
 MOVIES_SERVICE_URL=http://movie:3200/movies
 BOOKING_SERVICE_URL=http://booking:3201/bookings
-MONGO_URL=mongodb://user:pwd@mongo:27017/cinema-rest?authSource=admin
+MONGO_URL=mongodb://root:example@mongo:27017/cinema-rest?authSource=admin
 USE_MONGO=true
 ```
 
@@ -109,7 +111,7 @@ USERS_SERVICE_URL=http://localhost:3203/users
 SCHEDULE_SERVICE_URL=http://localhost:3202/schedules
 MOVIES_SERVICE_URL=http://localhost:3200/movies
 BOOKING_SERVICE_URL=http://localhost:3201/bookings
-MONGO_URL=mongodb://user:pwd@localhost:27017/cinema-rest?authSource=admin
+MONGO_URL=mongodb://root:example@localhost:27017/cinema-rest?authSource=admin
 USE_MONGO=true
 ```
 
