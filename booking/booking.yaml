@@ -1,8 +1,12 @@
 openapi: 3.1.1
 info:
-  title: Booking API
-  summary: This is the API of the Booking service
-  description: A service to manage user movie bookings, allowing CRD operations and validation with the Schedule service.
+  title: Booking Service API
+  summary: Booking microservice API
+  description: >
+    This service manages bookings made by users for scheduled movies.
+    Access is controlled using the `X-User-Id` header:
+      - Administrators or owners can manage user bookings.
+      - Administrators can retrieve the list of users who booked a specific movie.
   contact:
     name: Noé Jouan - Evan Runemberg
     url: https://imt-atlantique.fr/
@@ -10,19 +14,22 @@ info:
     name: GPL v3
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
   version: 1.0.0
+
 tags:
-- name: admins
-  description: Secured Admin-only calls (requires admin user via X-User-Id header)
-- name: developers
-  description: Operations available to regular developers
+  - name: public
+    description: Endpoints that do not require authentication
+  - name: secured
+    description: Endpoints requiring the `X-User-Id` header (admin or owner)
+  - name: admin
+    description: Endpoints restricted to administrators only
 
 paths:
   /:
     get:
       tags:
-      - developers
-      summary: Home page of the service
-      description: Returns a welcome message.
+        - public
+      summary: Service home page
+      description: Returns a simple HTML welcome message.
       operationId: home
       responses:
         "200":
@@ -36,81 +43,63 @@ paths:
   /bookings/{userid}:
     get:
       tags:
-      - admins
-      summary: Get bookings for a user
-      description: Retrieve all bookings for a specific user. Requires `X-User-Id` header of either the same user or an admin.
+        - secured
+      summary: Get all bookings for a user
+      description: >
+        Returns all bookings for a given user.
+        Accessible to the owner or an administrator.
       operationId: get_bookings_for_user
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: userid
-        in: path
-        description: User ID whose bookings to retrieve
-        required: true
-        schema:
-          type: string
-      - name: X-User-Id
-        in: header
-        description: ID of the current user making the request
-        required: true
-        schema:
-          type: string
+        - name: userid
+          in: path
+          required: true
+          description: User identifier
+          schema:
+            type: string
       responses:
         "200":
           description: Bookings found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserBookings'
-        "401":
-          description: No user ID provided in header
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: No user ID provided in header
-        "403":
-          description: Forbidden access to other user’s bookings without admin rights
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: You are not allowed to access this user's bookings
+                $ref: "#/components/schemas/UserBookings"
         "404":
-          description: No bookings for this user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: No bookings for this user
+          description: No bookings found for this user
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden (not admin nor owner)
 
     post:
       tags:
-      - developers
+        - secured
       summary: Add a booking for a user
-      description: Adds a new booking for a user after verifying the movie is scheduled.
+      description: >
+        Adds a booking (movie + date) for the specified user.
+        Accessible to the owner or an administrator.
+
+        This endpoint:
+          - Verifies the date exists using the Schedule Service  
+          - Checks the movie is scheduled on that date  
+          - Prevents duplicated bookings
       operationId: add_booking
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: userid
-        in: path
-        description: User ID
-        required: true
-        schema:
-          type: string
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
-        description: Booking data
         required: true
+        description: Booking details
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookingInput'
+              $ref: "#/components/schemas/BookingInput"
       responses:
         "200":
           description: Booking added
@@ -123,66 +112,42 @@ paths:
                     type: string
                     example: booking added
         "400":
-          description: Missing data or movie not scheduled
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Missing date or movie
+          description: Missing fields or movie not scheduled on this date
         "404":
           description: Date not found in schedule
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Date not found in schedule
         "409":
           description: Booking already exists
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Already booked
         "503":
           description: Schedule service unavailable
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Schedule service unavailable
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden
 
     delete:
       tags:
-      - developers
+        - secured
       summary: Delete a booking for a user
-      description: Deletes a specific booking of a user.
+      description: >
+        Deletes a booking (movie + date) for the specified user.
+        Accessible to the owner or an administrator.
       operationId: delete_booking
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: userid
-        in: path
-        description: User ID
-        required: true
-        schema:
-          type: string
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+            description: User identifier
       requestBody:
-        description: Booking data to delete
         required: true
+        description: Booking to remove
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookingInput'
+              $ref: "#/components/schemas/BookingInput"
       responses:
         "200":
           description: Booking deleted
@@ -195,111 +160,62 @@ paths:
                     type: string
                     example: booking deleted
         "400":
-          description: Missing data
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Missing date or movie
+          description: Missing fields
         "404":
           description: Booking not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Booking not found
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden
 
   /bookings/movie/{movie_id}:
     get:
       tags:
-      - admins
-      summary: Get users who booked a specific movie
-      description: Retrieve all users who have booked a movie by its ID. Requires `X-User-Id` header of an admin.
+        - admin
+      summary: List users who booked a specific movie
+      description: >
+        Returns the list of users who booked a given movie, with associated dates.
+        Accessible **only to administrators**.
+
+        This endpoint:
+          - Validates the movie exists using the Movie Service
       operationId: get_users_for_movie
+      security:
+        - UserHeaderAuth: []
       parameters:
         - name: movie_id
           in: path
-          description: Movie ID
           required: true
           schema:
             type: string
-        - name: X-User-Id
-          in: header
-          description: ID of the current user making the request (must be admin)
-          required: true
-          schema:
-            type: string
+          description: Movie identifier
       responses:
         "200":
-          description: Users who booked the movie
+          description: Users who booked this movie
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  movie:
-                    $ref: '#/components/schemas/MovieItem'
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        userid:
-                          type: string
-                          example: "chris_rivers"
-                        date:
-                          type: string
-                          example: "20151201"
-        "401":
-          description: No user ID provided in header
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: No user ID provided in header
-        "403":
-          description: Forbidden access without admin rights
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: You are not allowed to access movie booking details
+                $ref: "#/components/schemas/MovieBookings"
         "404":
-          description: Movie not found or no bookings for this movie
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  movie:
-                    $ref: '#/components/schemas/MovieItem'
-                  error:
-                    type: string
-                    example: No bookings found for this movie
+          description: Movie not found or no bookings found
         "503":
           description: Movie service unavailable
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Movie service unavailable
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden (admin only)
 
 components:
+  securitySchemes:
+    UserHeaderAuth:
+      type: apiKey
+      in: header
+      name: X-User-Id
+      description: >
+        ID of the calling user, used to verify:
+        - whether the user is an administrator
+        - whether the user is the resource owner
+
   schemas:
     BookingInput:
       type: object
@@ -309,61 +225,48 @@ components:
       properties:
         date:
           type: string
-          description: Date of the booking in YYYYMMDD format
-          example: "20151201"
+          example: "20250412"
         movie:
           type: string
-          description: Movie ID to book
-          example: "267eedb8-0f5d-42d5-8f43-72426b9fb3e6"
+          example: "a8034f44-aee4-44cf-b32c-74cf452aaaae"
+
+    UserBookings:
+      type: object
+      properties:
+        userid:
+          type: string
+          example: "alice01"
+        dates:
+          type: array
+          items:
+            $ref: "#/components/schemas/BookingDate"
 
     BookingDate:
       type: object
-      required:
-        - date
-        - movies
       properties:
         date:
           type: string
-          description: Date of the booking
-          example: "20151201"
+          example: "20250412"
         movies:
           type: array
           items:
             type: string
-          example:
-            - "267eedb8-0f5d-42d5-8f43-72426b9fb3e6"
+            example: "a8034f44-aee4-44cf-b32c-74cf452aaaae"
 
-    UserBookings:
+    MovieBookings:
       type: object
-      required:
-        - userid
-        - dates
       properties:
-        userid:
-          type: string
-          example: "chris_rivers"
-        dates:
+        movie:
+          type: object
+          description: Movie details returned by the Movie Service
+        users:
           type: array
           items:
-            $ref: '#/components/schemas/BookingDate'
-
-    MovieItem:
-      type: object
-      required:
-        - id
-        - title
-        - director
-        - rating
-      properties:
-        id:
-          type: string
-          example: "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
-        title:
-          type: string
-          example: "The Martian"
-        director:
-          type: string
-          example: "Ridley Scott"
-        rating:
-          type: number
-          example: 8.2
+            type: object
+            properties:
+              userid:
+                type: string
+                example: "alice01"
+              date:
+                type: string
+                example: "20250412"

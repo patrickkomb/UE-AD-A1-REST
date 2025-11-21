@@ -1,27 +1,40 @@
 openapi: 3.1.1
+
 info:
-  title: Schedule API
-  summary: This is the API of the Schedule service
-  description: A service to manage movie schedules, allowing CRD operations and retrieval of schedules by date.
+  title: Schedule Service API
+  summary: Showtime schedule microservice API
+  description: >
+    This service manages movie schedules for specific dates.
+
+    Access control uses the **X-User-Id** header:
+
+    - Only **administrators** can create or delete schedules.
+    - Public endpoints do not require authentication.
+
   contact:
     name: Noé Jouan - Evan Runemberg
     url: https://imt-atlantique.fr/
+
   license:
     name: GPL v3
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
+
   version: 1.0.0
+
 tags:
-- name: admins
-  description: Secured Admin-only calls
-- name: developers
-  description: Operations available to regular developers
+  - name: public
+    description: Endpoints that do not require authentication
+  - name: admin
+    description: Endpoints restricted to administrators only
+
 paths:
+
   /:
     get:
       tags:
-      - developers
-      summary: Home page of the service
-      description: Returns a welcome message.
+        - public
+      summary: Service home page
+      description: Returns a simple HTML welcome message.
       operationId: home
       responses:
         "200":
@@ -32,150 +45,148 @@ paths:
                 type: string
                 example: "<h1 style='color:blue'>Welcome to the Showtime service!</h1>"
 
-  /schedules:
-    post:
-      tags:
-      - developers
-      summary: Add a new schedule
-      description: Adds a new schedule to the system.
-      operationId: add_schedule
-      requestBody:
-        description: Schedule object to add
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ScheduleItem'
-      responses:
-        "200":
-          description: Schedule added successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: schedule added
-        "409":
-          description: Schedule date already exists
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Schedule date already exists
-
   /schedules/{date}:
     get:
       tags:
-      - developers
+        - public
       summary: Get schedule by date
-      description: Retrieve schedule information for a given date.
+      description: >
+        Returns the schedule (date + movie IDs) for a given day.
       operationId: get_schedule_bydate
       parameters:
-      - name: date
-        in: path
-        description: Date of the schedule in YYYYMMDD format
-        required: true
-        schema:
-          type: string
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
       responses:
         "200":
           description: Schedule found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScheduleItem'
+                $ref: "#/components/schemas/Schedule"
         "404":
-          description: No schedule for this date
+          description: No schedule exists for the selected date
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: No schedule for this date
+                $ref: "#/components/schemas/ErrorResponse"
+
     delete:
       tags:
-      - admins
-      summary: Delete schedule by date
-      description: Deletes a schedule for a specific date (Admin-only).
-      operationId: del_schedule_bydate
+        - admin
+      summary: Delete a schedule
+      description: >
+        Deletes the schedule for the given date.  
+        **Admin only** (via X-User-Id header).
+      operationId: del_schedule
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: date
-        in: path
-        description: Date of the schedule in YYYYMMDD format
-        required: true
-        schema:
-          type: string
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
       responses:
         "200":
           description: Schedule deleted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScheduleItem'
+                $ref: "#/components/schemas/Schedule"
         "404":
-          description: Schedule date not found
+          description: Schedule not found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Schedule date not found
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden (not admin)
 
   /schedules/{date}/movies:
     get:
       tags:
-      - admins
-      summary: Get schedule details with full movie information (Admin)
-      description: Retrieve schedule details for a specific date, including full movie details fetched from the Movies service.
-      operationId: get_schedule_details_bydate
+        - public
+      summary: Get full schedule with movie details
+      description: >
+        Fetches movie IDs from the schedule **and retrieves full movie details**  
+        from the Movies microservice.
+      operationId: get_schedule_details
       parameters:
-      - name: date
-        in: path
-        description: Date of the schedule in YYYYMMDD format
-        required: true
-        schema:
-          type: string
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
       responses:
         "200":
-          description: Schedule with detailed movies found
+          description: Schedule with detailed movie information
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  date:
-                    type: string
-                    example: "20151201"
-                  movies:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MovieItem'
+                $ref: "#/components/schemas/ScheduleWithMovies"
         "404":
-          description: No schedule or movies for this date
+          description: No schedule or no movies found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  date:
-                    type: string
-                    example: "20151201"
-                  error:
-                    type: string
-                    example: No movies found for this schedule
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /schedules:
+    post:
+      tags:
+        - admin
+      summary: Add a new schedule
+      description: >
+        Creates a schedule for a given date.  
+        **Admin only** (X-User-Id must be an administrator).
+      operationId: add_schedule
+      security:
+        - UserHeaderAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Schedule"
+      responses:
+        "200":
+          description: Schedule successfully added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "409":
+          description: Schedule date already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden (not admin)
 
 components:
+
+  securitySchemes:
+    UserHeaderAuth:
+      type: apiKey
+      in: header
+      name: X-User-Id
+      description: >
+        ID of the calling user, used to verify administrator permissions.
+
   schemas:
-    ScheduleItem:
+
+    Schedule:
       type: object
       required:
         - date
@@ -183,34 +194,59 @@ components:
       properties:
         date:
           type: string
-          description: Date of the schedule in YYYYMMDD format
-          example: "20151201"
+          format: date
+          example: "20250320"
         movies:
           type: array
-          description: List of movie IDs scheduled for that date
+          description: List of movie IDs
           items:
             type: string
-          example:
-            - "267eedb8-0f5d-42d5-8f43-72426b9fb3e6"
-            - "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
-            - "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
-    MovieItem:
+            example: "a8034f44-aee4-44cf-b32c-74cf452aaaae"
+
+    Movie:
       type: object
-      required:
-        - id
-        - title
-        - director
-        - rating
+      description: Movie details returned by the Movies Service
       properties:
         id:
           type: string
-          example: "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
         title:
           type: string
-          example: "The Martian"
         director:
           type: string
-          example: "Ridley Scott"
-        rating:
-          type: number
-          example: 8.2
+        year:
+          type: integer
+      example:
+        id: "a8034f44-aee4-44cf-b32c-74cf452aaaae"
+        title: "Inception"
+        director: "Christopher Nolan"
+        year: 2010
+
+    ScheduleWithMovies:
+      type: object
+      required:
+        - date
+        - movies
+      properties:
+        date:
+          type: string
+          format: date
+        movies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Movie"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: "No schedule for this date"
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: "schedule added"

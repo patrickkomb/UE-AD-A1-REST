@@ -1,215 +1,271 @@
 openapi: 3.1.1
 info:
-  title: Movie API
-  summary: This is the API of the Movie service
-  description: a looongggggg description
+  title: Movie Service API
+  summary: Movie microservice API
+  description: >
+    A service to manage movies (CRUD).  
+    Some routes are secured using the `X-User-Id` header and require admin privileges.
   contact:
-    name: Helene Coullon
-    url: https://helene-coullon.fr/
-    email: helene.coullon@imt-atlantique.fr
+    name: Noé Jouan - Evan Runemberg
+    url: https://imt-atlantique.fr/
   license:
     name: GPL v3
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
   version: 1.0.0
+
 tags:
-- name: admins
-  description: Secured Admin-only calls
-- name: developers
-  description: Operations available to regular developers
+  - name: public
+    description: Operations available to all users
+  - name: admin
+    description: Admin-only operations (require X-User-Id identifying an admin)
+
 paths:
   /:
     get:
       tags:
-      - developers
-      summary: home page of the service
-      description: |
-        Nothing to do
+        - public
+      summary: Home page
+      description: Service welcome message
       operationId: home
       responses:
         "200":
-          description: welcome message
+          description: Welcome message
           content:
             text/html:
               schema:
                 type: string
-                example: <h1 style='color:blue'>Welcome to the Movie service!</h1>
+                example: "<h1 style='color:blue'>Welcome to the Movie service!</h1>"
+
   /json:
     get:
       tags:
-      - developers
-      summary: get the full JSON database
-      description: |
-        Nothing to do
+        - public
+      summary: Get full database
+      description: Returns the entire list of movies.
       operationId: get_json
       responses:
         "200":
-          description: full JSON
+          description: Array of all movies
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllMovies'
+                type: array
+                items:
+                  $ref: "#/components/schemas/MovieItem"
+
   /movies/{movieid}:
     get:
       tags:
-      - developers
-      summary: get the movie by its id
-      description: By passing in the appropriate options, you can get info of a Movie
+        - public
+      summary: Get movie by ID
+      description: Retrieve a movie by its ID.
       operationId: get_movie_byid
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        schema:
-          type: string
+        - name: movieid
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
       responses:
         "200":
-          description: Movie description
+          description: Movie found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieItem'
-        "400":
-          description: bad input parameter
+                $ref: "#/components/schemas/MovieItem"
+        "500":
+          description: Movie ID not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Movie ID not found
+
     post:
       tags:
-      - admins
-      summary: add a movie item
-      description: Adds a movie to the system
-      operationId: create_movie
+        - admin
+      summary: Add a movie
+      description: >
+        Add a movie using the provided ID.  
+        Requires admin privileges (`X-User-Id` header).
+      operationId: add_movie
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: movieid
+          in: path
+          required: true
+          description: ID to assign to the movie
+          schema:
+            type: string
       requestBody:
-        description: Inventory item to add
+        required: true
+        description: Movie object to add
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MovieItem'
+              $ref: "#/components/schemas/MovieItem"
       responses:
         "200":
-          description: Movie created
+          description: Movie added successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieItem'
-        "409":
-          description: an existing item already exists
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: movie added
+        "500":
+          description: Movie ID already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: movie ID already exists
+
     delete:
       tags:
-      - admins
-      summary: delete a movie item
-      description: Adds a movie to the system
+        - admin
+      summary: Delete a movie
+      description: Remove a movie by ID. Requires admin rights.
       operationId: del_movie
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: movieid
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
       responses:
         "200":
-          description: item deleted
-        "400":
-          description: ID not found
+          description: Movie deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieItem"
+        "500":
+          description: Movie ID not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: movie ID not found
+
   /moviesbytitle:
     get:
       tags:
-      - developers
-      summary: get the movie by its title
-      description: |
-        By passing in the appropriate options, you can get Movie info
+        - public
+      summary: Get movie by title
+      description: Retrieve movie information using its title.
       operationId: get_movie_bytitle
       parameters:
-      - name: title
-        in: query
-        description: pass a title
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: title
+          in: query
+          required: true
+          description: Movie title
+          schema:
+            type: string
       responses:
         "200":
-          description: Movie item
+          description: Movie found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieItem'
-        "400":
-          description: bad input parameter
+                $ref: "#/components/schemas/MovieItem"
+        "500":
+          description: Movie title not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: movie title not found
+
   /movies/{movieid}/{rate}:
     put:
       tags:
-      - admins
-      summary: update a movie rate
-      description: update the rating of a movie
+        - admin
+      summary: Update movie rating
+      description: Update the rating of a movie (admin only).
       operationId: update_movie_rating
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      - name: rate
-        in: path
-        description: Movie rating.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          maximum: 10
-          minimum: 0
-          type: integer
+        - name: movieid
+          in: path
+          required: true
+          description: Movie ID
+          schema:
+            type: string
+        - name: rate
+          in: path
+          required: true
+          description: New rating
+          schema:
+            type: float
+            minimum: 0
+            maximum: 5
       responses:
         "200":
-          description: rate updated
-        "400":
-          description: movie ID not found
+          description: Rating updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieItem"
+        "500":
+          description: Movie ID not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: movie ID not found
+
 components:
+  securitySchemes:
+    UserHeaderAuth:
+      type: apiKey
+      in: header
+      name: X-User-Id
+      description: >
+        ID of caller user.  
+        Used by the service to check if the caller is an admin via `permissions.py`.
+
   schemas:
-    AllMovies:
-      type: object
-      required:
-        - movies
-      properties:
-        movies:
-          type: array
-          items:
-            type: object
-            properties:
-              $ref: '#/components/schemas/MovieItem'
     MovieItem:
       type: object
       required:
+        - id
         - title
         - rating
         - director
-        - id
       properties:
-        title:
-          type: string
-          example: The Martian
-        rating:
-          type: integer
-          example: 7
-        director:
-          type: string
-          example: Paul McGuigan
         id:
           type: string
-          example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
-
-
+          example: "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+        title:
+          type: string
+          example: "The Martian"
+        rating:
+          type: float
+          example: 3.9
+        director:
+          type: string
+          example: "Ridley Scott"

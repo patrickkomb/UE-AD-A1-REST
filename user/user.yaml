@@ -1,8 +1,12 @@
 openapi: 3.1.1
 info:
-  title: User API
-  summary: This is the API of the User service
-  description: A service to manage users, allowing CRUD operations and retrieval of user info.
+  title: User Service API
+  summary: User microservice API
+  description: >
+    This service manages users (CRUD).
+    Access is controlled using the `X-User-Id` header:
+      - Only administrators can add users.
+      - Administrators or owners can read, update, and delete.
   contact:
     name: Noé Jouan - Evan Runemberg
     url: https://imt-atlantique.fr/
@@ -10,18 +14,22 @@ info:
     name: GPL v3
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
   version: 1.0.0
+
 tags:
-- name: admins
-  description: Secured Admin-only calls
-- name: developers
-  description: Operations available to regular developers
+  - name: public
+    description: Endpoints that do not require authentication
+  - name: secured
+    description: Endpoints requiring the `X-User-Id` header (admin or owner)
+  - name: admin
+    description: Endpoints restricted to administrators only
+
 paths:
   /:
     get:
       tags:
-      - developers
-      summary: Home page of the service
-      description: Returns a welcome message.
+        - public
+      summary: Service home page
+      description: Returns a simple HTML welcome message.
       operationId: home
       responses:
         "200":
@@ -35,17 +43,21 @@ paths:
   /users:
     post:
       tags:
-      - developers
+        - admin
       summary: Add a new user
-      description: Adds a new user to the system.
+      description: >
+        Creates a new user.
+        Accessible **only to administrators** (`X-User-Id` must belong to an admin).
       operationId: add_user
+      security:
+        - UserHeaderAuth: []
       requestBody:
-        description: User object to add
         required: true
+        description: User data to create
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserItem'
+              $ref: "#/components/schemas/UserItem"
       responses:
         "200":
           description: User added successfully
@@ -67,135 +79,134 @@ paths:
                   error:
                     type: string
                     example: User ID already exists
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden (not an admin)
 
   /users/{userid}:
     get:
       tags:
-      - developers
-      summary: Get user by ID
-      description: Retrieve user information by their ID.
+        - secured
+      summary: Get a user by ID
+      description: >
+        Returns user information.
+        Accessible to the owner or an admin.
       operationId: get_user_byid
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: userid
-        in: path
-        description: User ID
-        required: true
-        schema:
-          type: string
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User identifier
       responses:
         "200":
           description: User found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserItem'
+                $ref: "#/components/schemas/UserItem"
         "404":
-          description: User ID not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: User ID not found
+          description: User not found
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden (not admin nor owner)
+
     put:
       tags:
-      - developers
-      summary: Update user by ID
-      description: Updates an existing user's information.
+        - secured
+      summary: Update a user
+      description: >
+        Updates an existing user.
+        Accessible to the owner or an admin.
       operationId: update_user
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: userid
-        in: path
-        description: User ID
-        required: true
-        schema:
-          type: string
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
-        description: User object with updated information
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserItem'
+              $ref: "#/components/schemas/UserItem"
       responses:
         "200":
           description: User updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserItem'
+                $ref: "#/components/schemas/UserItem"
         "404":
-          description: User ID not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: User ID not found
+          description: User not found
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden
+
     delete:
       tags:
-      - developers
-      summary: Delete user by ID
-      description: Deletes a user from the system.
+        - secured
+      summary: Delete a user
+      description: >
+        Deletes a user.
+        Accessible to the owner or an admin.
       operationId: del_user
+      security:
+        - UserHeaderAuth: []
       parameters:
-      - name: userid
-        in: path
-        description: User ID
-        required: true
-        schema:
-          type: string
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: User deleted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserItem'
+                $ref: "#/components/schemas/UserItem"
         "404":
-          description: User ID not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: User ID not found
+          description: User not found
+        "401":
+          description: Missing header
+        "403":
+          description: Forbidden
 
 components:
+  securitySchemes:
+    UserHeaderAuth:
+      type: apiKey
+      in: header
+      name: X-User-Id
+      description: >
+        ID of the calling user, used to verify:
+        - whether the user is an administrator
+        - whether the user is the resource owner
+
   schemas:
-    AllUsers:
-      type: object
-      required:
-        - users
-      properties:
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserItem'
     UserItem:
       type: object
       required:
         - id
         - name
-        - last_active
         - is_admin
       properties:
         id:
           type: string
-          example: chris_rivers
+          example: alice01
         name:
           type: string
-          example: Chris Rivers
-        last_active:
-          type: integer
-          description: Last active timestamp (Unix epoch)
-          example: 1360031010
+          example: Alice Martin
         is_admin:
           type: boolean
           example: false
