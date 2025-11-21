@@ -1,0 +1,372 @@
+type: collection.insomnia.rest/5.0
+name: Movies - REST
+meta:
+  id: wrk_e44a374923c24122ad40f1c1e3e6e4bd
+  created: 1763740535737
+  modified: 1763740556501
+  description: ""
+collection:
+  - url: http://localhost:3200/movies/123456
+    name: POST Movie - Admin OK
+    meta:
+      id: req_8404f5cca94946e8a738e804ecf56f79
+      created: 1763652903852
+      modified: 1763740976561
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098710
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"title": "test_admin",
+        	"rating": 4.33,
+        	"director": "Someone",
+        	"id": "123456"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_a790a4a67abf4a458e4bc7ba3c3b0a76
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_2dfeae3b4f4046aa9af89632ff8b7733
+      - name: X-User-Id
+        value: admin
+        id: pair_04d8264aa54a47f0ac9e2197000fee73
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/movies/123456
+    name: POST Movie - Admin KO
+    meta:
+      id: req_3d728445f06b45cdb77ba37d23a6ba6f
+      created: 1763653212102
+      modified: 1763741381107
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098697.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"title": "test_admin",
+        	"rating": 4.33,
+        	"director": "Someone",
+        	"id": "123456"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.0.0
+      - name: X-User-Id
+        value: chris_rivers
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/movies/a8034f44-aee4-44cf-b32c-74cf452aaaae
+    name: GET Movie by ID - OK
+    meta:
+      id: req_41c2b6398dcb4319aa420dfac5b029d5
+      created: 1763740652485
+      modified: 1763740983094
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098610
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_6e88ff0d53714ebc90e06c01616c223e
+      - name: X-User-Id
+        value: admin
+        id: pair_a1a5567ac57b48519262a98401ed08e3
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/movies/99999
+    name: GET Movie by ID - Not found
+    meta:
+      id: req_4fe2c576156e4cbfbe05572ef1c78beb
+      created: 1763740695404
+      modified: 1763740885535
+      isPrivate: false
+      description: ""
+      sortKey: -1763614872954.75
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_6e88ff0d53714ebc90e06c01616c223e
+      - name: X-User-Id
+        value: admin
+        id: pair_a1a5567ac57b48519262a98401ed08e3
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/json
+    name: GET All movies - OK
+    meta:
+      id: req_0f784c9a8f0e452196633e79515c5b1c
+      created: 1763740720186
+      modified: 1763741516432
+      isPrivate: false
+      description: ""
+      sortKey: -1763000842473.875
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_6e88ff0d53714ebc90e06c01616c223e
+      - name: X-User-Id
+        value: admin
+        id: pair_a1a5567ac57b48519262a98401ed08e3
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/moviesbytitle
+    name: GET Movie by title - OK
+    meta:
+      id: req_9c34184f4a7b447cb2ebc967754c9e61
+      created: 1763740867707
+      modified: 1763741102165
+      isPrivate: false
+      description: ""
+      sortKey: -1763610647299.5
+    method: GET
+    parameters:
+      - id: pair_eec63db8554846d5ba3bc7abbb5c8c67
+        name: title
+        value: Creed
+        description: ""
+        disabled: false
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_6e88ff0d53714ebc90e06c01616c223e
+      - name: X-User-Id
+        value: admin
+        id: pair_a1a5567ac57b48519262a98401ed08e3
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/moviesbytitle
+    name: GET Movie by title - Not found
+    meta:
+      id: req_af485d2d7ef345af96fc37c3a994a310
+      created: 1763740882412
+      modified: 1763741135718
+      isPrivate: false
+      description: ""
+      sortKey: -1763606421644.25
+    method: GET
+    parameters:
+      - id: pair_07a6b43261b043aa83886d8fe4a49810
+        name: title
+        value: The great movie
+        description: ""
+        disabled: false
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_6e88ff0d53714ebc90e06c01616c223e
+      - name: X-User-Id
+        value: admin
+        id: pair_a1a5567ac57b48519262a98401ed08e3
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/movies/a8034f44-aee4-44cf-b32c-74cf452aaaae/4.2
+    name: PUT Movie (update rating) - Admin OK
+    meta:
+      id: req_87f8b16f10c74b7a9f556f4a414ddf84
+      created: 1763741181149
+      modified: 1763741307289
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098685
+    method: PUT
+    body:
+      mimeType: application/json
+      text: "{}"
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_a790a4a67abf4a458e4bc7ba3c3b0a76
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_2dfeae3b4f4046aa9af89632ff8b7733
+      - name: X-User-Id
+        value: admin
+        id: pair_04d8264aa54a47f0ac9e2197000fee73
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/movies/a8034f44-aee4-44cf-b32c-74cf452aaaae/4.2
+    name: PUT Movie (update rating) - Admin KO
+    meta:
+      id: req_da86c9b2f11e4359bd2a80930aa564ba
+      created: 1763741320985
+      modified: 1763741327798
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098672.5
+    method: PUT
+    body:
+      mimeType: application/json
+      text: "{}"
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_a790a4a67abf4a458e4bc7ba3c3b0a76
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_2dfeae3b4f4046aa9af89632ff8b7733
+      - name: X-User-Id
+        value: chris_rivers
+        id: pair_04d8264aa54a47f0ac9e2197000fee73
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/movies/99999/4.2
+    name: PUT Movie (update rating) - Not found
+    meta:
+      id: req_97902b957c4547428c4ebf66c61d71cc
+      created: 1763741361772
+      modified: 1763741370631
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098666.25
+    method: PUT
+    body:
+      mimeType: application/json
+      text: "{}"
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_a790a4a67abf4a458e4bc7ba3c3b0a76
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_2dfeae3b4f4046aa9af89632ff8b7733
+      - name: X-User-Id
+        value: admin
+        id: pair_04d8264aa54a47f0ac9e2197000fee73
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/movies/123456
+    name: DELETE Movie - Admin OK
+    meta:
+      id: req_6aef097bd4524d1ca2d75303a6c44809
+      created: 1763741401972
+      modified: 1763741433932
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098691.25
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_6e88ff0d53714ebc90e06c01616c223e
+      - name: X-User-Id
+        value: admin
+        id: pair_a1a5567ac57b48519262a98401ed08e3
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3200/movies/123456
+    name: DELETE Movie - Admin KO
+    meta:
+      id: req_7a64ba25097b40a684c12b4520e5a217
+      created: 1763741492610
+      modified: 1763741497997
+      isPrivate: false
+      description: ""
+      sortKey: -1763619098688.125
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/12.0.0
+        id: pair_6e88ff0d53714ebc90e06c01616c223e
+      - name: X-User-Id
+        value: chris_rivers
+        id: pair_a1a5567ac57b48519262a98401ed08e3
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_924f35e5abf94fc2b2a93f019e0317e6
+    created: 1758288634407
+    modified: 1758288634407
+environments:
+  name: Base Environment
+  meta:
+    id: env_acaf40462ae641f98bbdad6b7dd91e17
+    created: 1758288634407
+    modified: 1758288634407
+    isPrivate: false

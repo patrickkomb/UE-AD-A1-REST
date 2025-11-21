@@ -1,0 +1,292 @@
+type: collection.insomnia.rest/5.0
+name: User
+meta:
+  id: wrk_0eec07b5c35849aa8ac46e116d2fe871
+  created: 1763648961436
+  modified: 1763648961436
+  description: ""
+collection:
+  - name: GET
+    meta:
+      id: fld_3d0bc8083340465abc7dbf91df9e572c
+      created: 1763667110886
+      modified: 1763667110886
+      sortKey: -1763667110886
+      description: ""
+    children:
+      - url: "{{ _.USER_LOCAL }}/chris_rivers"
+        name: User By Id (from Admin) OK
+        meta:
+          id: req_22a86acddb64493d905ce7a6dabbcd15
+          created: 1763648999901
+          modified: 1763667118820
+          isPrivate: false
+          description: ""
+          sortKey: -1763667117667
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_4b10eac3d8e84e429295c40edc6f4e38
+          - id: pair_209772f3017843fcb9eae6f76ae2d2fe
+            name: X-User-Id
+            value: admin
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.USER_LOCAL }}/chris_rivers"
+        name: User By Id (from other) KO
+        meta:
+          id: req_b60d8b7729224f44a4488a9a118e61cd
+          created: 1763667087683
+          modified: 1763667117596
+          isPrivate: false
+          description: ""
+          sortKey: -1763667117567
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_4b10eac3d8e84e429295c40edc6f4e38
+          - id: pair_209772f3017843fcb9eae6f76ae2d2fe
+            name: X-User-Id
+            value: garret_heaton
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.USER_LOCAL }}/chris_rivers"
+        name: User By Id (from User) OK
+        meta:
+          id: req_c877cbed5fd24498bc8a1f321fb32317
+          created: 1763667129098
+          modified: 1763667133515
+          isPrivate: false
+          description: ""
+          sortKey: -1763667117617
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_4b10eac3d8e84e429295c40edc6f4e38
+          - id: pair_209772f3017843fcb9eae6f76ae2d2fe
+            name: X-User-Id
+            value: chris_rivers
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.USER_LOCAL }}/chris_riverss"
+        name: User By Id (from Admin) NotFound
+        meta:
+          id: req_f0d0fe7f22364a368db03fd0dd15c776
+          created: 1763672140902
+          modified: 1763672142787
+          isPrivate: false
+          description: ""
+          sortKey: -1763667117642
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_4b10eac3d8e84e429295c40edc6f4e38
+          - id: pair_209772f3017843fcb9eae6f76ae2d2fe
+            name: X-User-Id
+            value: admin
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: POST
+    meta:
+      id: fld_5105b37b12c3433da3e939b0b12f2356
+      created: 1763667150409
+      modified: 1763667165161
+      sortKey: -1763667110986
+      description: ""
+    children:
+      - url: "{{ _.USER_LOCAL }}"
+        name: Create (from Admin) OK
+        meta:
+          id: req_6a43e09faab94f008dfea5ad8bfacd42
+          created: 1763667187936
+          modified: 1763728777982
+          isPrivate: false
+          description: ""
+          sortKey: -1763667135125.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"id": "test_test",
+            	"name": "Test test",
+            	"last_active": 1360031244,
+            	"is_admin": false
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_33c225062f1a4e1b9dbcfe1e7339e458
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_b32ef95a520e452e8a966771c1e62005
+          - id: pair_c01dcb963fdf4d79baab30d96307325c
+            name: X-User-Id
+            value: admin
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.USER_LOCAL }}"
+        name: Create (from User) KO
+        meta:
+          id: req_1a67bed202144fe4949a60b820dd69e7
+          created: 1763667291811
+          modified: 1763667299153
+          isPrivate: false
+          description: ""
+          sortKey: -1763667126396.25
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"id": "test_test",
+            	"name": "Test test",
+            	"last_active": 1360031244,
+            	"is_admin": false
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_33c225062f1a4e1b9dbcfe1e7339e458
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_b32ef95a520e452e8a966771c1e62005
+          - id: pair_c01dcb963fdf4d79baab30d96307325c
+            name: X-User-Id
+            value: test_test
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: PUT
+    meta:
+      id: fld_7be7f54c07d3452095508e2f6290d841
+      created: 1763667310533
+      modified: 1763667310533
+      sortKey: -1763667310533
+      description: ""
+  - name: DELETE
+    meta:
+      id: fld_e82df68c74d54b778a259cce0e1520bb
+      created: 1763667323457
+      modified: 1763667323457
+      sortKey: -1763667323457
+      description: ""
+    children:
+      - url: "{{ _.USER_LOCAL }}/test_test"
+        name: DELETE (from admin) OK
+        meta:
+          id: req_9014ff3d782149d5ab99f9863e65fd37
+          created: 1763667326434
+          modified: 1763727428733
+          isPrivate: false
+          description: ""
+          sortKey: -1763667326434
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_a1595f1a23854e0294559178512b9fea
+          - id: pair_bd1cf8b6715e4ea596f7fab5d7e79b04
+            name: X-User-Id
+            value: admin
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.USER_LOCAL }}/test_test"
+        name: DELETE (from user) OK
+        meta:
+          id: req_e25e3a58e867461aa47341528a866f56
+          created: 1763727434114
+          modified: 1763727440499
+          isPrivate: false
+          description: ""
+          sortKey: -1763667230779.75
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+            id: pair_a1595f1a23854e0294559178512b9fea
+          - id: pair_bd1cf8b6715e4ea596f7fab5d7e79b04
+            name: X-User-Id
+            value: test_test
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_f757016c82c247ee6162b294717f97adf3e639f4
+    created: 1763648961438
+    modified: 1763648961438
+environments:
+  name: Base Environment
+  meta:
+    id: env_f757016c82c247ee6162b294717f97adf3e639f4
+    created: 1763648961437
+    modified: 1763648961437
+    isPrivate: false

@@ -1,0 +1,16 @@
+type: environment.insomnia.rest/5.0
+name: LOCAL
+meta:
+  id: wrk_3af812dea8e648ff805900de32a9f047
+  created: 1763572180113
+  modified: 1763572180113
+  description: ""
+environments:
+  name: Base Environment
+  meta:
+    id: env_2fd0635fd6d256380260a4172ef21d2c94e36d2a
+    created: 1763572180114
+    modified: 1763713946422
+    isPrivate: false
+  data:
+    USER_LOCAL: http://localhost:3203/users
